@@ -4,11 +4,8 @@ kind: Deployment
 metadata:
   name: mautrix-telegram-bridge
   labels:
-    helm.sh/chart: mautrix-telegram-1.0.1
     app.kubernetes.io/name: mautrix-telegram
     app.kubernetes.io/instance: matrix-telegram
-    app.kubernetes.io/version: "latest"
-    app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
   strategy:
@@ -23,8 +20,6 @@ spec:
       labels:
         app.kubernetes.io/name: mautrix-telegram
         app.kubernetes.io/instance: matrix-telegram
-      annotations:
-        checksum/secret: "c364603660da8ae730f808828d02371e46d71c4396e0dcc1b1efcaac0170ff43"
     spec:
       serviceAccountName: mautrix-telegram-bridge
       securityContext:

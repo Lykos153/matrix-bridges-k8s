@@ -5,11 +5,8 @@ kind: Deployment
 metadata:
   name: mautrix-googlechat-bridge
   labels:
-    helm.sh/chart: mautrix-googlechat-1.0.1
     app.kubernetes.io/name: mautrix-googlechat
     app.kubernetes.io/instance: matrix-googlechat
-    app.kubernetes.io/version: "latest"
-    app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
   strategy:
@@ -26,8 +23,6 @@ spec:
       labels:
         app.kubernetes.io/name: mautrix-googlechat
         app.kubernetes.io/instance: matrix-googlechat
-      annotations:
-        checksum/secret: "17e363ea21e5567318f636215ce39773f1f548ee5f41a19eff3bdbc39df2c080"
     spec:
       serviceAccountName: mautrix-googlechat-bridge
       securityContext:

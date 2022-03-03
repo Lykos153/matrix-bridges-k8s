@@ -2,23 +2,23 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: mautrix-telegram-bridge
+  name: mautrix-signal-bridge
   labels:
-    app.kubernetes.io/name: mautrix-telegram
-    app.kubernetes.io/instance: matrix-telegram
+    app.kubernetes.io/name: mautrix-signal
+    app.kubernetes.io/instance: matrix-signal
 spec:
   tls:
     - hosts:
-        - "telegrambridge.matrix.example.com"
-      secretName: telegrambridge-tls
+        - "signalbridge.matrix.example.com"
+      secretName: signalbridge-tls
   rules:
-    - host: "telegrambridge.matrix.example.com"
+    - host: "signalbridge.matrix.example.com"
       http:
         paths:
           - path: /
             backend:
               service:
-                name: mautrix-telegram-bridge
+                name: mautrix-signal-bridge
                 port:
                   name: http
             pathType: Prefix

@@ -2,23 +2,23 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: mautrix-facebook-bridge
+  name: mautrix-instagram-bridge
   labels:
-    app.kubernetes.io/name: mautrix-facebook
-    app.kubernetes.io/instance: matrix-facebook
+    app.kubernetes.io/name: mautrix-instagram
+    app.kubernetes.io/instance: matrix-instagram
 spec:
   tls:
     - hosts:
-        - "facebookbridge.matrix.example.com"
-      secretName: facebookbridge-tls
+        - "instagrambridge.matrix.example.com"
+      secretName: instagrambridge-tls
   rules:
-    - host: "facebookbridge.matrix.example.com"
+    - host: "instagrambridge.matrix.example.com"
       http:
         paths:
           - path: /
             backend:
               service:
-                name: mautrix-facebook-bridge
+                name: mautrix-instagram-bridge
                 port:
                   name: http
             pathType: Prefix

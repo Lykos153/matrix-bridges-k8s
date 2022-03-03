@@ -1,0 +1,83 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mautrix-telegram-bridge
+  labels:
+    helm.sh/chart: mautrix-telegram-1.0.1
+    app.kubernetes.io/name: mautrix-telegram
+    app.kubernetes.io/instance: matrix-telegram
+    app.kubernetes.io/version: "latest"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate: null
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mautrix-telegram
+      app.kubernetes.io/instance: matrix-telegram
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mautrix-telegram
+        app.kubernetes.io/instance: matrix-telegram
+      annotations:
+        checksum/secret: "c364603660da8ae730f808828d02371e46d71c4396e0dcc1b1efcaac0170ff43"
+    spec:
+      serviceAccountName: mautrix-telegram-bridge
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: mautrix-telegram
+          securityContext:
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
+          image: "dock.mau.dev/mautrix/telegram:v0.11.2"
+          imagePullPolicy: Always
+          command:
+            - python3
+            - -m
+            - mautrix_telegram
+            - -c
+            - /config/config.yaml
+          ports:
+            - name: http
+              containerPort: 29318
+              protocol: TCP
+          env:
+            []
+          livenessProbe:
+            httpGet:
+              path: /_matrix/mau/live
+              port: http
+            failureThreshold: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /_matrix/mau/live
+              port: http
+            failureThreshold: 5
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              path: /_matrix/mau/live
+              port: http
+            initialDelaySeconds: 5
+            failureThreshold: 30
+            periodSeconds: 10
+          resources:
+            {}
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: logs
+              mountPath: /logs
+      volumes:
+        - name: config
+          secret:
+            secretName: mautrix-telegram-bridge
+        - name: logs
+          emptyDir: {}

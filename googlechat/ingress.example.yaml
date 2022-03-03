@@ -1,0 +1,24 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mautrix-googlechat-bridge
+  labels:
+    app.kubernetes.io/name: mautrix-googlechat
+    app.kubernetes.io/instance: matrix-googlechat
+spec:
+  tls:
+    - hosts:
+        - "googlechatbridge.matrix.example.com"
+      secretName: googlechatbridge-tls
+  rules:
+    - host: "googlechatbridge.matrix.example.com"
+      http:
+        paths:
+          - path: /
+            backend:
+              service:
+                name: mautrix-googlechat-bridge
+                port:
+                  name: http
+            pathType: Prefix

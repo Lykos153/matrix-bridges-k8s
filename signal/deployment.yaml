@@ -1,0 +1,119 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mautrix-signal-bridge
+  labels:
+    app.kubernetes.io/name: mautrix-signal
+    app.kubernetes.io/instance: matrix-signal
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+    rollingUpdate: null
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mautrix-signal
+      app.kubernetes.io/instance: matrix-signal
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mautrix-signal
+        app.kubernetes.io/instance: matrix-signal
+    spec:
+      serviceAccountName: mautrix-signal-bridge
+      securityContext:
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      initContainers:
+        - name: init
+          securityContext:
+            {}
+          image: "dock.mau.dev/mautrix/signal:v0.2.1"
+          imagePullPolicy: Always
+          command: ["/bin/sh"]
+          args:
+            - "-c"
+            - |-
+              set -ex
+              cp /config/*.yaml /data/
+              mkdir -p "/data/tmp/outgoing_attachment_dir"
+              #chown 1000:1000 -R /data
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /config
+          resources:
+            {}
+      containers:
+        - name: mautrix-signal
+          securityContext:
+            {}
+          image: "dock.mau.dev/mautrix/signal:v0.2.1"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 29318
+              protocol: TCP
+          env:
+            []
+          livenessProbe:
+            httpGet:
+              path: /_matrix/mau/live
+              port: http
+            failureThreshold: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /_matrix/mau/live
+              port: http
+            failureThreshold: 5
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              path: /_matrix/mau/live
+              port: http
+            initialDelaySeconds: 5
+            failureThreshold: 30
+            periodSeconds: 10
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /config
+            - name: signald
+              mountPath: /signald
+          resources:
+            {}
+        - name: signald
+          securityContext:
+            {}
+          image: "signald/signald:0.15.0-43-cd821ab5"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 29318
+              protocol: TCP
+          env:
+            - { name: SIGNALD_ENABLE_METRICS, value: "true" }
+            - { name: SIGNALD_METRICS_PORT, value: "9595" }
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /config
+            - name: signald
+              mountPath: /signald
+          resources:
+            {}
+      volumes:
+        - name: config
+          secret:
+            secretName: mautrix-signal-bridge
+        - name: data
+          emptyDir: {}
+        - name: signald
+          persistentVolumeClaim:
+            claimName: mautrix-signal-bridge

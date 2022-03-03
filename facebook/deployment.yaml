@@ -1,0 +1,108 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mautrix-facebook-bridge
+  labels:
+    app.kubernetes.io/name: mautrix-facebook
+    app.kubernetes.io/instance: matrix-facebook
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdates: null
+    type: Recreate
+
+    rollingUpdate: null
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mautrix-facebook
+      app.kubernetes.io/instance: matrix-facebook
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mautrix-facebook
+        app.kubernetes.io/instance: matrix-facebook
+    spec:
+      serviceAccountName: mautrix-facebook-bridge
+      securityContext:
+        {}
+      initContainers:
+        - name: init
+          securityContext:
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
+          image: "dock.mau.dev/mautrix/facebook:v0.3.3"
+          imagePullPolicy: Always
+          command: ["/bin/sh"]
+          args:
+            - "-c"
+            - |-
+              set -ex
+              cp /config/*.yaml /data/
+          env:
+            - { name: UID, value: "<nil>" }
+            - { name: GID, value: "<nil>" }
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: logs
+              mountPath: /logs
+            - name: config
+              mountPath: /config
+          resources:
+            {}
+      containers:
+        - name: mautrix-facebook
+          securityContext:
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
+          image: "dock.mau.dev/mautrix/facebook:v0.3.3"
+          imagePullPolicy: Always
+          command:
+            - python3
+            - -m
+            - mautrix_facebook
+            - -c
+            - /data/config.yaml
+          ports:
+            - name: http
+              containerPort: 29318
+              protocol: TCP
+          env:
+            []
+          livenessProbe:
+            httpGet:
+              path: /_matrix/mau/live
+              port: http
+            failureThreshold: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /_matrix/mau/live
+              port: http
+            failureThreshold: 5
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              path: /_matrix/mau/live
+              port: http
+            initialDelaySeconds: 5
+            failureThreshold: 30
+            periodSeconds: 10
+          resources:
+            {}
+          volumeMounts:
+            - name: config
+              mountPath: /data
+            - name: logs
+              mountPath: /logs
+      volumes:
+        - name: config
+          secret:
+            secretName: mautrix-facebook-bridge
+        - name: data
+          emptyDir: {}
+        - name: logs
+          emptyDir: {}

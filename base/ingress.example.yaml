@@ -1,0 +1,24 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mautrix-bridge
+  labels:
+    app.kubernetes.io/name: mautrix-bridge
+    app.kubernetes.io/instance: mautrix-bridge
+spec:
+  tls:
+    - hosts:
+        - "bridge.matrix.example.com"
+      secretName: bridge-tls
+  rules:
+    - host: "bridge.matrix.example.com"
+      http:
+        paths:
+          - path: /
+            backend:
+              service:
+                name: mautrix-bridge
+                port:
+                  name: http
+            pathType: Prefix

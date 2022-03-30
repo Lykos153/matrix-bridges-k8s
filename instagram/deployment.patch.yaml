@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mautrix-bridge-base
+  labels:
+    app.kubernetes.io/name: mautrix-instagram
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mautrix-instagram
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mautrix-instagram
+    spec:
+      serviceAccountName: mautrix-instagram-bridge
+      containers:
+        - name: mautrix-bridge
+          image: "dock.mau.dev/mautrix/instagram:v0.1.1"
+          command:
+            - python3
+            - -m
+            - mautrix_instagram
+            - -c
+            - /data/config.yaml
+      volumes:
+        - name: config
+          configMap:
+            name: mautrix-instagram-bridge
+        - name: secret
+          secret:
+            secretName: mautrix-instagram-bridge
+        - name: data
+          emptyDir: {}
+

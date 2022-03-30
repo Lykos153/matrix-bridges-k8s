@@ -23,7 +23,7 @@ spec:
             - "-c"
             - |-
               set -ex
-              yq -s '.[0] * .[1]' /config/config.yaml /secret/config.yaml > /data/config.yaml
+              yq -s '.[0] * .[1]' /config/config.yaml /secret/secrets.yaml > /data/config.yaml
           volumeMounts:
             - name: data
               mountPath: /data

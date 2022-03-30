@@ -5,11 +5,9 @@ metadata:
   name: mautrix-signal-bridge
   labels:
     app.kubernetes.io/name: mautrix-signal
-    app.kubernetes.io/instance: matrix-signal
 spec:
   accessModes:
     - "ReadWriteOnce"
   resources:
     requests:
       storage: "1Gi"
-  storageClassName: hcloud-volumes

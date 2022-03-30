@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mautrix-bridge-base
+  labels:
+    app.kubernetes.io/name: mautrix-googlechat
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mautrix-googlechat
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mautrix-googlechat
+    spec:
+      serviceAccountName: mautrix-googlechat-bridge
+      containers:
+        - name: mautrix-bridge
+          image: "dock.mau.dev/mautrix/googlechat:v0.3.1"
+          command:
+            - python3
+            - -m
+            - mautrix_googlechat
+            - -c
+            - /data/config.yaml
+      volumes:
+        - name: config
+          configMap:
+            name: mautrix-googlechat-bridge
+        - name: secret
+          secret:
+            secretName: mautrix-googlechat-bridge
+        - name: data
+          emptyDir: {}
+

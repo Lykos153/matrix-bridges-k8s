@@ -17,7 +17,7 @@ spec:
       serviceAccountName: mautrix-signal-bridge
       containers:
         - name: mautrix-bridge
-          image: "dock.mau.dev/mautrix/signal:v0.2.1"
+          image: "dock.mau.dev/mautrix/signal:v0.2.3"
           command:
             - python3
             - -m
@@ -32,7 +32,7 @@ spec:
             - name: signald
               mountPath: /signald
         - name: signald
-          image: "signald/signald:0.15.0-43-cd821ab5"
+          image: "signald/signald:0.17.0"
           ports:
             - name: http
               containerPort: 29318

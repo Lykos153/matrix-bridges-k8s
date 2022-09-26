@@ -4,5 +4,31 @@
   ],
   "kubernetes": {
     "fileMatch": ["^.*\\.yaml$"]
-  }
+  },
+  "packageRules": [
+    {
+      "matchPackageNames": ["dock.mau.dev/mautrix/telegram"],
+      "customChangelogUrl": "https://github.com/mautrix/telegram"
+    },
+    {
+      "matchPackageNames": ["dock.mau.dev/mautrix/googlechat"],
+      "customChangelogUrl": "https://github.com/mautrix/googlechat"
+    },
+    {
+      "matchPackageNames": ["dock.mau.dev/mautrix/whatsapp"],
+      "customChangelogUrl": "https://github.com/mautrix/whatsapp"
+    },
+    {
+      "matchPackageNames": ["dock.mau.dev/mautrix/facebook"],
+      "customChangelogUrl": "https://github.com/mautrix/facebook"
+    },
+    {
+      "matchPackageNames": ["dock.mau.dev/mautrix/instagram"],
+      "customChangelogUrl": "https://github.com/mautrix/instagram"
+    },
+    {
+      "matchPackageNames": ["dock.mau.dev/mautrix/signal"],
+      "customChangelogUrl": "https://github.com/mautrix/signal"
+    }
+  ]
 }

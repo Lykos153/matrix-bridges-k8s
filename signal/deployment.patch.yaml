@@ -17,7 +17,7 @@ spec:
       serviceAccountName: mautrix-signal-bridge
       containers:
         - name: mautrix-bridge
-          image: "dock.mau.dev/mautrix/signal:v0.3.0"
+          image: "dock.mau.dev/mautrix/signal:v0.4.0"
           command:
             - python3
             - -m

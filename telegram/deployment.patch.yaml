@@ -17,7 +17,7 @@ spec:
       serviceAccountName: mautrix-telegram-bridge
       containers:
         - name: mautrix-bridge
-          image: "dock.mau.dev/mautrix/telegram:v0.11.3"
+          image: "dock.mau.dev/mautrix/telegram:v0.12.1"
           command:
             - python3
             - -m

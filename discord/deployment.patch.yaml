@@ -1,0 +1,35 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mautrix-bridge-base
+  labels:
+    app.kubernetes.io/name: mautrix-discord
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mautrix-discord
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mautrix-discord
+    spec:
+      serviceAccountName: mautrix-discord-bridge
+      containers:
+        - name: mautrix-bridge
+          image: "dock.mau.dev/mautrix/discord:v0.1.1"
+          command:
+          - /usr/bin/mautrix-discord
+          - "-n"
+          - "-c"
+          - "/data/config.yaml"
+      volumes:
+        - name: config
+          configMap:
+            name: mautrix-discord-bridge
+        - name: secret
+          secret:
+            secretName: mautrix-discord-bridge
+        - name: data
+          emptyDir: {}
+

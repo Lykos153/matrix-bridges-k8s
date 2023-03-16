@@ -32,7 +32,7 @@ spec:
             - name: signald
               mountPath: /signald
         - name: signald
-          image: "signald/signald:0.22.1"
+          image: "signald/signald:0.23.2"
           ports:
             - name: http
               containerPort: 29318

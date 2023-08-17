@@ -17,7 +17,7 @@ spec:
       serviceAccountName: mautrix-discord-bridge
       containers:
         - name: mautrix-bridge
-          image: "dock.mau.dev/mautrix/discord:v0.6.0"
+          image: "dock.mau.dev/mautrix/discord:v0.6.1"
           command:
           - /usr/bin/mautrix-discord
           - "-n"

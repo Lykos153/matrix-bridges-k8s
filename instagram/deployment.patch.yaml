@@ -17,7 +17,7 @@ spec:
       serviceAccountName: mautrix-instagram-bridge
       containers:
         - name: mautrix-bridge
-          image: "dock.mau.dev/mautrix/instagram:v0.3.0"
+          image: "dock.mau.dev/mautrix/instagram:v0.3.1"
           command:
             - python3
             - -m

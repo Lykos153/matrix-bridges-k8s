@@ -17,7 +17,7 @@ spec:
       serviceAccountName: mautrix-whatsapp-bridge
       containers:
         - name: mautrix-bridge
-          image: "dock.mau.dev/mautrix/whatsapp:v0.10.7"
+          image: "dock.mau.dev/mautrix/whatsapp:v0.10.9"
           command:
           - /usr/bin/mautrix-whatsapp
           - "-n"
